@@ -16,6 +16,5 @@ module Backend
     end
 
     config.actions.format :json
-    config.actions.default_response_format :json
   end
 end

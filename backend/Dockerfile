@@ -8,6 +8,7 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       build-essential \
       libpq-dev \
+      postgresql-client \
       libyaml-dev \
       git \
       curl && \
