@@ -6,7 +6,6 @@
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
-      "Bash(chunk:*)",
       "Read(//Users/tacoda/tacoda/fawlty/**)"
     ],
     "deny": [
@@ -24,17 +23,6 @@
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-commit-gate.sh",
             "timeout": 60
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "chunk validate",
-            "timeout": 330
           }
         ]
       }
