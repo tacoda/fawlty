@@ -8,7 +8,7 @@ FRONTEND      := $(COMPOSE) exec frontend
         db-create db-migrate db-rollback db-seed db-reset db-prepare \
         backend-console backend-test \
         frontend-install frontend-dev frontend-build frontend-lint \
-        format
+        format gate gate-test hooks
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nFawlty — make targets\n\n"} \
@@ -84,6 +84,18 @@ db-reset: ## Drop, recreate, migrate, seed
 	$(BACKEND) bundle exec hanami db create
 	$(BACKEND) bundle exec hanami db migrate
 	$(BACKEND) bundle exec hanami db seed
+
+##@ Quality
+
+gate: ## Run the commit gate against staged changes
+	@./.claude/hooks/commit-gate.sh && echo "Commit gate passed."
+
+gate-test: ## Self-check the commit gate's rules
+	@./.claude/hooks/gate-selftest.sh
+
+hooks: ## Install the commit gate as .git/hooks/pre-commit
+	@ln -sf ../../.claude/hooks/commit-gate.sh .git/hooks/pre-commit
+	@echo "Installed .git/hooks/pre-commit -> .claude/hooks/commit-gate.sh"
 
 ##@ Backend
 
