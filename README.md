@@ -57,6 +57,8 @@ Ports as mapped in `docker-compose.yml`:
 | backend  | <http://localhost:2300> |
 | frontend | <http://localhost:5173> |
 
+The API is reachable at <http://localhost:2300/api>. Run `make ps` to see which of these services are actually up.
+
 ## API
 
 All endpoints are JSON, mounted under `/api`.
