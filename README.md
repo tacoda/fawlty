@@ -112,6 +112,18 @@ up`, and `make db-seed` (see Quickstart above).
 | `frontend-dev` | Run the Vite dev server in foreground (rare, since `up` already does it) |
 | `frontend-build` | Build the production frontend bundle |
 
+## Ports
+
+Ports as mapped in `docker-compose.yml`:
+
+| Service  | Port |
+| -------- | ---- |
+| db       | `5432` — connect with `make db-shell` |
+| backend  | <http://localhost:2300> |
+| frontend | <http://localhost:5173> |
+
+The API is reachable at <http://localhost:2300/api>. Run `make ps` to see which of these services are actually up.
+
 ## API
 
 All endpoints are JSON, mounted under `/api`.
