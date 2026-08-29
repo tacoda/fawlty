@@ -47,6 +47,16 @@ make nuke
 
 Run `make` (or `make help`) to see all targets.
 
+## Ports
+
+Ports as mapped in `docker-compose.yml`:
+
+| Service  | Port |
+| -------- | ---- |
+| db       | `5432` — connect with `make db-shell` |
+| backend  | <http://localhost:2300> |
+| frontend | <http://localhost:5173> |
+
 ## API
 
 All endpoints are JSON, mounted under `/api`.
