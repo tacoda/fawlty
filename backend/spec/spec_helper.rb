@@ -16,6 +16,10 @@ module RequestHelpers
   def post_json(path, payload)
     post path, JSON.generate(payload), {"CONTENT_TYPE" => "application/json"}
   end
+
+  def patch_json(path, payload)
+    patch path, JSON.generate(payload), {"CONTENT_TYPE" => "application/json"}
+  end
 end
 
 RSpec.configure do |config|

@@ -26,6 +26,29 @@ module Backend
       def set_status(id, status)
         update(id, status: status)
       end
+
+      def available(check_in, check_out)
+        rooms
+          .exclude(id: conflicting(check_in, check_out).select(:room_id).dataset)
+          .order(:number)
+          .to_a
+      end
+
+      def available?(room_id, check_in, check_out)
+        conflicting(check_in, check_out).where(room_id: room_id).count.zero?
+      end
+
+      private
+
+      # Housekeeping turns a room over on departure morning, so a stay ending on
+      # the 8th and one starting on the 8th do not collide. Both ends of the
+      # comparison are therefore strict. A cancelled reservation holds nothing.
+      def conflicting(check_in, check_out)
+        reservations
+          .exclude(status: "cancelled")
+          .where(Sequel[:check_in_date] < check_out)
+          .where(Sequel[:check_out_date] > check_in)
+      end
     end
   end
 end

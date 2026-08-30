@@ -20,10 +20,11 @@ export const api = {
 };
 
 export const rooms = {
-  list:   ()        => api.get("/rooms"),
-  create: (data)    => api.post("/rooms", data),
-  update: (id, d)   => api.patch(`/rooms/${id}`, d),
-  remove: (id)      => api.del(`/rooms/${id}`)
+  list:      ()          => api.get("/rooms"),
+  available: (from, to)  => api.get(`/rooms?check_in=${from}&check_out=${to}`),
+  create:    (data)      => api.post("/rooms", data),
+  update:    (id, d)     => api.patch(`/rooms/${id}`, d),
+  remove:    (id)        => api.del(`/rooms/${id}`)
 };
 
 export const guests = {
