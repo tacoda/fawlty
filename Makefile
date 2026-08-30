@@ -3,12 +3,15 @@ COMPOSE       ?= docker compose
 BACKEND       := $(COMPOSE) exec backend
 FRONTEND      := $(COMPOSE) exec frontend
 
+TEST_DATABASE_URL ?= postgres://postgres:postgres@db:5432/fawlty_test
+
 .PHONY: help install build up down restart logs ps clean nuke \
         backend-shell frontend-shell db-shell \
         db-create db-migrate db-rollback db-seed db-reset db-prepare \
-        backend-console backend-test \
-        frontend-install frontend-dev frontend-build frontend-lint \
-        format gate gate-test hooks
+        db-test-prepare backend-console backend-test \
+        frontend-install frontend-dev frontend-build \
+        check lint lint-backend lint-frontend lint-fix \
+        gate gate-test hooks
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nFawlty — make targets\n\n"} \
@@ -87,6 +90,21 @@ db-reset: ## Drop, recreate, migrate, seed
 
 ##@ Quality
 
+check: lint backend-test gate ## Everything: lint, tests, commit gate
+	@echo "All checks passed."
+
+lint: lint-backend lint-frontend ## Run rubocop and eslint
+
+lint-backend: ## Run rubocop
+	$(BACKEND) bundle exec rubocop
+
+lint-frontend: ## Run eslint
+	$(FRONTEND) npm run lint
+
+lint-fix: ## Autocorrect what rubocop and eslint can fix
+	$(BACKEND) bundle exec rubocop -a
+	$(FRONTEND) npm run lint:fix
+
 gate: ## Run the commit gate against staged changes
 	@./.claude/hooks/commit-gate.sh && echo "Commit gate passed."
 
@@ -102,8 +120,11 @@ hooks: ## Install the commit gate as .git/hooks/pre-commit
 backend-console: ## Open a Hanami console
 	$(BACKEND) bundle exec hanami console
 
-backend-test: ## Run backend test suite
-	$(BACKEND) bundle exec rspec
+backend-test: ## Run backend test suite (against the test database)
+	$(BACKEND) env HANAMI_ENV=test DATABASE_URL=$(TEST_DATABASE_URL) bundle exec rspec
+
+db-test-prepare: ## Create and migrate the test database
+	$(BACKEND) env HANAMI_ENV=test DATABASE_URL=$(TEST_DATABASE_URL) bundle exec hanami db prepare
 
 bundle: ## Run bundle install in the backend container
 	$(BACKEND) bundle install

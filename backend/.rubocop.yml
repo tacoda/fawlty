@@ -1,0 +1,69 @@
+# Narrow on purpose. DisabledByDefault means a cop only runs because someone
+# decided it should, so `make lint` reports findings worth acting on instead of
+# a wall of style opinions nobody agreed to.
+#
+# Adding a cop is a normal change. Silencing one needs a reason in the commit.
+
+AllCops:
+  TargetRubyVersion: 3.3
+  DisabledByDefault: true
+  NewCops: disable
+  SuggestExtensions: false
+  Exclude:
+    - "config/db/structure.sql"
+    - "vendor/**/*"
+    - "tmp/**/*"
+
+# ── House conventions the charter already states ─────────────────────────────
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always_true
+
+Layout/IndentationWidth:
+  Enabled: true
+  Width: 2
+
+Layout/IndentationConsistency:
+  Enabled: true
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Layout/TrailingEmptyLines:
+  Enabled: true
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+# ── Real bugs, not taste ─────────────────────────────────────────────────────
+Lint/Debugger:
+  Enabled: true
+
+Lint/DuplicateMethods:
+  Enabled: true
+
+Lint/UselessAssignment:
+  Enabled: true
+
+Lint/ShadowingOuterLocalVariable:
+  Enabled: true
+
+Lint/UnreachableCode:
+  Enabled: true
+
+Lint/SuppressedException:
+  Enabled: true
+
+# ── Size limits, so an action that grew a query gets noticed ─────────────────
+Metrics/MethodLength:
+  Enabled: true
+  Max: 20
+  CountAsOne: ["array", "hash", "heredoc"]
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 25
+
+Metrics/ClassLength:
+  Enabled: true
+  Max: 120

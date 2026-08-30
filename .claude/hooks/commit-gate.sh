@@ -33,9 +33,13 @@ files=$(git diff --cached --name-only --diff-filter=ACM)
 [ -z "$files" ] && files=$(git diff --name-only --diff-filter=ACM)
 [ -z "$files" ] && exit 0
 
-# Config under .claude/ is exempt from content scans: it documents the very
-# patterns being matched. Everything else is fair game.
-scannable=$(printf '%s\n' "$files" | grep -v '^\.claude/' || true)
+# Exempt from content scans: config that documents the very patterns being
+# matched. .claude/ is the gate's own rules; the linter configs name the rules
+# they ban, so eslint.config.js necessarily contains the string "no-debugger".
+# Everything else is fair game.
+scannable=$(printf '%s\n' "$files" \
+  | grep -v '^\.claude/' \
+  | grep -vE '(^|/)(eslint\.config\.(js|mjs|cjs)|\.eslintrc.*|\.rubocop\.yml)$' || true)
 
 staged_content() {
   # Prefer the index; fall back to worktree for `git commit -a`.

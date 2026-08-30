@@ -116,13 +116,25 @@ up`, and `make db-seed` (see Quickstart above).
 
 Ports as mapped in `docker-compose.yml`:
 
-| Service  | Port |
-| -------- | ---- |
-| db       | `5432` — connect with `make db-shell` |
-| backend  | <http://localhost:2300> |
-| frontend | <http://localhost:5173> |
+| Service  | Variable    | Default |
+| -------- | ----------- | ------- |
+| db       | `DB_PORT`   | `5432` — connect with `make db-shell` |
+| backend  | `API_PORT`  | <http://localhost:2300> |
+| frontend | `WEB_PORT`  | <http://localhost:5173> |
 
 The API is reachable at <http://localhost:2300/api>. Run `make ps` to see which of these services are actually up.
+
+### Running two checkouts at once
+
+Only the host ports collide — Compose already derives separate containers and volumes from the directory name. Copy `.env.example` to `.env` in the second checkout and shift the numbers:
+
+```sh
+cp .env.example .env
+printf 'DB_PORT=5433\nAPI_PORT=2301\nWEB_PORT=5174\n' > .env
+make up
+```
+
+Container-internal ports never move, so `CORS_ORIGINS` follows `WEB_PORT` and the Vite dev proxy keeps talking to `backend:2300` on the Compose network.
 
 ## API
 
