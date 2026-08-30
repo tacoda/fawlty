@@ -19,11 +19,14 @@ export const api = {
   del:    (p)        => request(p, { method: "DELETE" })
 };
 
+const qs = (params) => new URLSearchParams(params).toString();
+
 export const rooms = {
-  list:   ()        => api.get("/rooms"),
-  create: (data)    => api.post("/rooms", data),
-  update: (id, d)   => api.patch(`/rooms/${id}`, d),
-  remove: (id)      => api.del(`/rooms/${id}`)
+  list:      ()        => api.get("/rooms"),
+  available: (from, to) => api.get(`/rooms?${qs({ check_in_date: from, check_out_date: to })}`),
+  create:    (data)    => api.post("/rooms", data),
+  update:    (id, d)   => api.patch(`/rooms/${id}`, d),
+  remove:    (id)      => api.del(`/rooms/${id}`)
 };
 
 export const guests = {

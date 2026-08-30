@@ -5,6 +5,7 @@ ENV["HANAMI_ENV"] ||= "test"
 require "hanami/prepare"
 require "rack/test"
 require "json"
+require "securerandom"
 
 module RequestHelpers
   include Rack::Test::Methods
@@ -15,6 +16,10 @@ module RequestHelpers
 
   def post_json(path, payload)
     post path, JSON.generate(payload), {"CONTENT_TYPE" => "application/json"}
+  end
+
+  def patch_json(path, payload)
+    patch path, JSON.generate(payload), {"CONTENT_TYPE" => "application/json"}
   end
 end
 

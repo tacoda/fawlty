@@ -98,3 +98,4 @@ input, select, textarea {
 .row-actions { display: flex; gap: 0.4rem; }
 .empty { color: var(--muted); padding: 1rem; text-align: center; }
 .error { color: #b91c1c; font-size: 0.85rem; }
+.hint { color: var(--muted); font-size: 0.85rem; }

@@ -11,6 +11,17 @@ module Backend
         reservations.by_pk(id).one
       end
 
+      # True when another live reservation already holds that room over those
+      # nights, which is the double-booking the front desk used to discover at
+      # check-in.
+      def double_booked?(room_id, check_in_date, check_out_date)
+        reservations
+          .overlapping(check_in_date, check_out_date)
+          .where(room_id: room_id)
+          .count
+          .positive?
+      end
+
       def create(attrs)
         reservations.changeset(:create, attrs).commit
       end
