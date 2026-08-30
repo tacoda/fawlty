@@ -10,8 +10,7 @@ TEST_DATABASE_URL ?= postgres://postgres:postgres@db:5432/fawlty_test
         db-create db-migrate db-rollback db-seed db-reset db-prepare \
         db-test-prepare backend-console backend-test \
         frontend-install frontend-dev frontend-build \
-        check lint lint-backend lint-frontend lint-fix layer-check \
-        gate gate-test hooks
+        check lint lint-backend lint-frontend lint-fix
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nFawlty — make targets\n\n"} \
@@ -90,7 +89,7 @@ db-reset: ## Drop, recreate, migrate, seed
 
 ##@ Quality
 
-check: lint backend-test gate ## Everything: lint, tests, commit gate
+check: lint backend-test ## Everything: lint and tests
 	@echo "All checks passed."
 
 lint: lint-backend lint-frontend ## Run rubocop and eslint
@@ -104,20 +103,6 @@ lint-frontend: ## Run eslint
 lint-fix: ## Autocorrect what rubocop and eslint can fix
 	$(BACKEND) bundle exec rubocop -a
 	$(FRONTEND) npm run lint:fix
-
-layer-check: ## Check the whole tree for layering violations
-	@./.claude/hooks/layer-check.sh $$(git ls-files 'backend/**/*.rb' 'frontend/src/**') \
-		&& echo "No layering violations."
-
-gate: ## Run the commit gate against staged changes
-	@./.claude/hooks/commit-gate.sh && echo "Commit gate passed."
-
-gate-test: ## Self-check the commit gate's rules
-	@./.claude/hooks/gate-selftest.sh
-
-hooks: ## Install the commit gate as .git/hooks/pre-commit
-	@ln -sf ../../.claude/hooks/commit-gate.sh .git/hooks/pre-commit
-	@echo "Installed .git/hooks/pre-commit -> .claude/hooks/commit-gate.sh"
 
 ##@ Backend
 

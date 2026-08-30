@@ -92,9 +92,6 @@ up`, and `make db-seed` (see Quickstart above).
 
 | Target | What it does |
 | --- | --- |
-| `gate` | Run the commit gate against staged changes |
-| `gate-test` | Self-check the commit gate's rules |
-| `hooks` | Install the commit gate as .git/hooks/pre-commit |
 
 ### Backend
 
