@@ -16,14 +16,24 @@ or bare `bundle`/`npm` — the targets already wrap `compose exec`.
 | --- | --- |
 | Boot the stack | `make up` |
 | Stop | `make down` |
+| **Everything (lint + tests + gate)** | `make check` |
+| Lint (rubocop + eslint) | `make lint` · autofix: `make lint-fix` |
 | Backend tests | `make backend-test` |
 | Backend console | `make backend-console` |
 | Migrate / seed | `make db-migrate` / `make db-seed` |
+| Test database | `make db-test-prepare` |
 | Frontend build | `make frontend-build` |
 | **Commit gate** | `make gate` |
 | Install git hook | `make hooks` |
 
+**Work is not done until `make check` passes.** Do not report a change as
+complete on the strength of having written it.
+
 Frontend: <http://localhost:5173> · API: <http://localhost:2300/api/rooms>
+
+Ports come from the root `.env` (`DB_PORT`, `API_PORT`, `WEB_PORT`), defaulting
+to 5432 / 2300 / 5173. Copy `.env.example` to `.env` and change the numbers to
+run a second checkout alongside this one.
 
 ## Architecture
 
@@ -49,6 +59,21 @@ Load the rule file that matches what you are touching:
 - [`.claude/rules/backend.md`](.claude/rules/backend.md) — `backend/**/*.rb`
 - [`.claude/rules/frontend.md`](.claude/rules/frontend.md) — `frontend/src/**`
 - [`.claude/rules/commits.md`](.claude/rules/commits.md) — any commit or PR
+
+## The layer check
+
+Every `Write` and `Edit` runs `.claude/hooks/layer-check.sh` as a `PostToolUse`
+hook. The file is already on disk by then, so the hook does not prevent the
+write — it hands the finding straight back and expects the fix before the next
+file. It blocks on three things:
+
+- an action under `backend/app/actions/` containing query logic (`Sequel.`,
+  `.by_pk(`, `.where(`, `.order(`, `.join(`, a `Backend::Relations` reference)
+- `fetch(` anywhere under `frontend/src/` other than `api.js`
+- a `backend/**/*.rb` file missing `# frozen_string_literal: true`
+
+Scan the whole tree with `make layer-check`. The rules in `.claude/rules/`
+already said all three; the hook is what makes them binding.
 
 ## The commit gate
 

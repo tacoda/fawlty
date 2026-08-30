@@ -10,7 +10,7 @@ TEST_DATABASE_URL ?= postgres://postgres:postgres@db:5432/fawlty_test
         db-create db-migrate db-rollback db-seed db-reset db-prepare \
         db-test-prepare backend-console backend-test \
         frontend-install frontend-dev frontend-build \
-        check lint lint-backend lint-frontend lint-fix \
+        check lint lint-backend lint-frontend lint-fix layer-check \
         gate gate-test hooks
 
 help: ## Show this help
@@ -104,6 +104,10 @@ lint-frontend: ## Run eslint
 lint-fix: ## Autocorrect what rubocop and eslint can fix
 	$(BACKEND) bundle exec rubocop -a
 	$(FRONTEND) npm run lint:fix
+
+layer-check: ## Check the whole tree for layering violations
+	@./.claude/hooks/layer-check.sh $$(git ls-files 'backend/**/*.rb' 'frontend/src/**') \
+		&& echo "No layering violations."
 
 gate: ## Run the commit gate against staged changes
 	@./.claude/hooks/commit-gate.sh && echo "Commit gate passed."

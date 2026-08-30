@@ -58,5 +58,22 @@ is blocked by the commit gate.
 
 ## Tests
 
-RSpec via `make backend-test`. There is no suite yet — if you add the first
-specs, put them in `backend/spec/` mirroring `app/`.
+RSpec via `make backend-test`, which runs against `fawlty_test` — never the
+development database. Specs live in `backend/spec/` mirroring `app/`; request
+specs go in `backend/spec/requests/<resource>_spec.rb`.
+
+`spec_helper.rb` gives request specs `get` / `post_json(path, hash)` /
+`last_response` / `json_body`. Follow `spec/requests/rooms_spec.rb`.
+
+**Every new endpoint gets a spec.** At minimum: the success path and the
+failure the action explicitly handles (the 404, or the 422). An endpoint
+without a spec is not finished.
+
+## Lint
+
+`make lint-backend` runs rubocop. The config in `backend/.rubocop.yml` is
+`DisabledByDefault`, so every enabled cop is one someone chose — a finding is
+real, not style noise.
+
+Fix the offense. Do not add an inline `rubocop:disable`, and do not turn a cop
+off in `.rubocop.yml`, unless the user asked for it.

@@ -43,7 +43,14 @@ component's `<style>` block, which Svelte already scopes.
 
 No new dependencies. Svelte and Vite cover it.
 
+## Lint
+
+`make lint-frontend` runs eslint. `no-console`, `no-debugger`,
+`no-unused-vars`, and `eqeqeq` are errors, plus the `eslint-plugin-svelte`
+recommended set. Fix the finding rather than adding an `eslint-disable`
+comment.
+
 ## Debugging
 
-`console.log` is fine while you work and is blocked at commit time. Strip it
-before staging.
+`console.log` is fine while you work. Eslint errors on it and the commit gate
+blocks it, so strip it before staging.

@@ -7,8 +7,11 @@ globs:
 
 ## Before committing
 
-Run `make gate`. It is the same check the hook runs, so a clean `make gate`
-means the commit will go through.
+Run `make check` — lint, tests, then the gate. A clean run is the only thing
+that makes a change reportable as done.
+
+`make gate` alone is the same check the commit hook runs, so a clean gate means
+the commit will go through. It does not mean the code works.
 
 Commit only what the task asked for. If you noticed unrelated dead code, say so
 in your reply — do not sweep it into the diff.
